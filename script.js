@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `${sessionLabel} : ${elapsedTime} min `
     );
 
-    li.appendChild(text);
+    // li.appendChild(text);
     li.appendChild(createImage);
     sessionsList.appendChild(li);
   };
