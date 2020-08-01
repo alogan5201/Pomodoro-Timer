@@ -1,7 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const startButton = document.querySelector("#pomodoro-start");
 
+  const startButton = document.querySelector("#pomodoro-start");
   const stopButton = document.querySelector("#pomodoro-stop");
+
+  let isClockRunning = false;
+  // in seconds = 25 mins
+  let workSessionDuration = 1500;
+  let currentTimeLeftInSession = 1500;
+
+  // in seconds = 5 mins;
+  let breakSessionDuration = 300;
+
+  let timeSpentInCurrentSession = 0;
+  let type = "Work";
+
+  let currentTaskLabel = document.querySelector("#pomodoro-clock-task");
+
   let updatedWorkSessionDuration;
   let updatedBreakSessionDuration;
 
@@ -10,23 +24,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   workDurationInput.value = "25";
   breakDurationInput.value = "5";
-  let isClockRunning = false;
-  // in seconds = 25 mins
-  let workSessionDuration = 1500;
-  let currentTimeLeftInSession = 1500;
-  // in seconds = 5 mins;
-  let breakSessionDuration = 300;
-  let type = "Work";
-  let timeSpentInCurrentSession = 0;
-  let currentTaskLabel = document.querySelector("#pomodoro-clock-task");
+
   let isClockStopped = true;
-  const progressBar = new ProgressBar.Circle("#pomodoro-timer", {
-    strokeWidth: 2,
-    text: {
-      value: "25:00",
-    },
-    trailColor: "#f4f4f4",
-  });
+  
+ const progressBar = new ProgressBar.Circle("#pomodoro-timer", {
+   strokeWidth: 2,
+   text: {
+     value: "25:00"
+   },
+   trailColor: "#f4f4f4",
+ });
+
   // START
   startButton.addEventListener("click", () => {
     toggleClock();
@@ -36,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   stopButton.addEventListener("click", () => {
     toggleClock(true);
   });
+
   // UPDATE WORK TIME
   workDurationInput.addEventListener("input", () => {
     updatedWorkSessionDuration = minuteToSeconds(workDurationInput.value);
@@ -45,39 +54,16 @@ document.addEventListener("DOMContentLoaded", () => {
   breakDurationInput.addEventListener("input", () => {
     updatedBreakSessionDuration = minuteToSeconds(breakDurationInput.value);
   });
-  class AndrewsProgress {
-    constructor(score) {
-      this.score = score;
-    }
-    increment() {
-      this.score++;
-    }
-  }
 
-  const july2020 = new AndrewsProgress(30);
-
-  const minuteToSeconds = (mins) => {
+  const minuteToSeconds = mins => {
     return mins * 60;
   };
-  const setUpdatedTimers = () => {
-    if (type === "Work") {
-      currentTimeLeftInSession = updatedWorkSessionDuration
-        ? updatedWorkSessionDuration
-        : workSessionDuration;
-      workSessionDuration = currentTimeLeftInSession;
-    } else {
-      currentTimeLeftInSession = updatedBreakSessionDuration
-        ? updatedBreakSessionDuration
-        : breakSessionDuration;
-      breakSessionDuration = currentTimeLeftInSession;
-    }
-  };
-  const toggleClock = (reset) => {
+
+  const toggleClock = reset => {
     togglePlayPauseIcon(reset);
     if (reset) {
       stopClock();
     } else {
-      console.log(isClockStopped);
       if (isClockStopped) {
         setUpdatedTimers();
         isClockStopped = false;
@@ -98,94 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 1000);
         isClockRunning = true;
       }
-      // new
       showStopIcon();
-    }
-  };
-
-  const stepDown = () => {
-    if (currentTimeLeftInSession > 0) {
-      // decrease time left / increase time spent
-      currentTimeLeftInSession--;
-      timeSpentInCurrentSession++;
-    } else if (currentTimeLeftInSession === 0) {
-      timeSpentInCurrentSession = 0;
-      document.getElementById("myAudio").play();
-      alert("Times up");
-      // Timer is over -> if work switch to break, viceversa
-      if (type === "Work") {
-        currentTimeLeftInSession = breakSessionDuration;
-        displaySessionLog("Work");
-        type = "Break";
-        setUpdatedTimers();
-        // new
-        currentTaskLabel.value = "Break";
-        currentTaskLabel.disabled = true;
-      } else {
-        currentTimeLeftInSession = workSessionDuration;
-        type = "Work";
-        // new
-        if (currentTaskLabel.value === "Break") {
-          currentTaskLabel.value = workSessionLabel;
-        }
-        currentTaskLabel.disabled = false;
-        displaySessionLog("Break");
-      }
-    }
-    displayCurrentTimeLeftInSession();
-  };
-
-  const stopClock = () => {
-    setUpdatedTimers();
-    displaySessionLog(type);
-    updateProgress(type);
-    clearInterval(clockTimer);
-    isClockStopped = true;
-    isClockRunning = false;
-    currentTimeLeftInSession = workSessionDuration;
-    displayCurrentTimeLeftInSession();
-    type = "Work";
-    timeSpentInCurrentSession = 0;
-  };
-
-  var displaySessionLog = function displaySessionLog(type) {
-    var sessionsList = document.querySelector("#pomodoro-sessions");
-    // append li to it
-    var li = document.createElement("li");
-    if (type === "Work") {
-      // currentTaskLabel.value = "Break";
-      sessionLabel = currentTaskLabel.value ? currentTaskLabel.value : "Work";
-      workSessionLabel = sessionLabel;
-    } else {
-      sessionLabel = "Break";
-    }
-    var elapsedTime = parseInt(timeSpentInCurrentSession / 60);
-    elapsedTime = elapsedTime > 0 ? elapsedTime : "< 1";
-
-    var text = document.createTextNode(
-      sessionLabel + " : " + elapsedTime + " min"
-    );
-
-    let halfTomato = document.createElement("img");
-    halfTomato.setAttribute("src", "./half-tomato-png.png");
-
-    let fullTomato = document.createElement("img");
-    fullTomato.setAttribute("src", "./full-tomato-png.png");
-    // Work : < 1 min will be 30 minutes
-
-    let displayTomato = halfTomato;
-    displayTomato = elapsedTime > 0 ? fullTomato : halfTomato;
-
-    li.appendChild(text);
-    li.appendChild(displayTomato);
-    sessionsList.appendChild(li);
-  };
-
-  const updateProgress = function updateProgress(type) {
-    var elapsedTime = parseInt(timeSpentInCurrentSession / 60);
-    if (type === "Work" && elapsedTime > 0) {
-      july2020.increment();
-      console.log(july2020.score);
     }
   };
 
@@ -204,7 +103,84 @@ document.addEventListener("DOMContentLoaded", () => {
     progressBar.text.innerText = result.toString();
   };
 
-  const togglePlayPauseIcon = (reset) => {
+  const stopClock = () => {
+    setUpdatedTimers();
+    displaySessionLog(type);
+    clearInterval(clockTimer);
+    isClockStopped = true;
+    isClockRunning = false;
+    currentTimeLeftInSession = workSessionDuration;
+    displayCurrentTimeLeftInSession();
+    type = "Work";
+    timeSpentInCurrentSession = 0;
+  };
+
+  const stepDown = () => {
+    if (currentTimeLeftInSession > 0) {
+      // decrease time left / increase time spent
+      currentTimeLeftInSession--;
+      timeSpentInCurrentSession++;
+    } else if (currentTimeLeftInSession === 0) {
+      timeSpentInCurrentSession = 0;
+      // Timer is over -> if work switch to break, viceversa
+      if (type === "Work") {
+        currentTimeLeftInSession = breakSessionDuration;
+        displaySessionLog("Work");
+        type = "Break";
+        setUpdatedTimers();
+        // new
+        currentTaskLabel.value = "Break";
+        currentTaskLabel.disabled = true;
+      } else {
+        currentTimeLeftInSession = workSessionDuration;
+        type = "Work";
+        setUpdatedTimers();
+        // new
+        if (currentTaskLabel.value === "Break") {
+          currentTaskLabel.value = workSessionLabel;
+        }
+        currentTaskLabel.disabled = false;
+        displaySessionLog("Break");
+      }
+    }
+    displayCurrentTimeLeftInSession();
+  };
+
+  const displaySessionLog = type => {
+    const sessionsList = document.querySelector("#pomodoro-sessions");
+    // append li to it
+    const li = document.createElement("li");
+    if (type === "Work") {
+      sessionLabel = currentTaskLabel.value ? currentTaskLabel.value : "Work";
+      workSessionLabel = sessionLabel;
+    } else {
+      sessionLabel = "Break";
+    }
+    let elapsedTime = parseInt(timeSpentInCurrentSession / 60);
+    elapsedTime = elapsedTime > 0 ? elapsedTime : "< 1";
+
+    const text = document.createTextNode(
+      `${sessionLabel} : ${elapsedTime} min`
+    );
+    li.appendChild(text);
+    sessionsList.appendChild(li);
+  };
+
+  const setUpdatedTimers = () => {
+    if (type === "Work") {
+      currentTimeLeftInSession = updatedWorkSessionDuration
+        ? updatedWorkSessionDuration
+        : workSessionDuration;
+      workSessionDuration = currentTimeLeftInSession;
+    } else {
+      currentTimeLeftInSession = updatedBreakSessionDuration
+        ? updatedBreakSessionDuration
+        : breakSessionDuration;
+      breakSessionDuration = currentTimeLeftInSession;
+    }
+  };
+
+  const togglePlayPauseIcon = reset => {
     const playIcon = document.querySelector("#play-icon");
     const pauseIcon = document.querySelector("#pause-icon");
     if (reset) {
@@ -232,4 +208,5 @@ document.addEventListener("DOMContentLoaded", () => {
       type === "Work" ? workSessionDuration : breakSessionDuration;
     return (timeSpentInCurrentSession / sessionDuration) * 10;
   };
+
 });
