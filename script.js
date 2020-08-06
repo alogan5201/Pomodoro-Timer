@@ -159,6 +159,9 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       sessionLabel = "Break";
     }
+    let tomatos = document.querySelector("ul.tomatos");
+    let tomato = document.createElement("li");
+    tomato.setAttribute("class", "half-tomato");
     var elapsedTime = parseInt(timeSpentInCurrentSession / 60);
     elapsedTime = elapsedTime > 0 ? elapsedTime : "< 1";
 
@@ -174,12 +177,24 @@ document.addEventListener("DOMContentLoaded", () => {
     // Work : < 1 min will be 30 minutes
 
     let displayTomato = halfTomato;
-    displayTomato = elapsedTime > 0 ? fullTomato : halfTomato;
+    displayTomato = elapsedTime > 0 ? fullTomato : tomato;
+    tomatos.appendChild(tomato);
+    //li.appendChild(text);
 
-    li.appendChild(text);
-    li.appendChild(displayTomato);
-    sessionsList.appendChild(li);
+    // sessionsList.appendChild(li);
   };
+
+  let ourObserver = new MutationObserver((mutations) => {
+    for (let mutation of mutations) {
+      console.log("Mutation detected");
+    }
+  });
+
+  ourObserver.observe(document.querySelector(".tomatos"), {
+    childList: true,
+    subtree: true,
+    attributes: true,
+  });
 
   const updateProgress = function updateProgress(type) {
     var elapsedTime = parseInt(timeSpentInCurrentSession / 60);

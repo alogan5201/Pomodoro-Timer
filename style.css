@@ -112,3 +112,13 @@ body {
   border-radius: 3px;
   padding: 5px;
 }
+.half-tomato {
+  background-image: url("half-tomato-png.png");
+  background-repeat: no-repeat;
+  padding: 10px;
+}
+.full-tomato {
+  background-image: url("full-tomato-png.png");
+  background-repeat: no-repeat;
+  padding: 10px;
+}
