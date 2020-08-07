@@ -27,10 +27,12 @@
           <div>
             <input type="text" id="pomodoro-clock-task" placeholder="Enter your task..." />
           </div>
+         
           <div id="pomodoro-clock-actions">
-            <button id="pomodoro-start">
-                <i class="fas fa-play" id="play-icon"></i>
-                <i class="fas fa-pause hidden" id="pause-icon"></i>
+            <button  class = "o-play-btn">
+                <i class="o-play-btn__icon" id="play-icon"></i>
+                <!-- <i class="fas fa-pause hidden" id="pause-icon"></i> -->
+                <div class="o-play-btn__mask"></div>
               </button>
               <button id="pomodoro-stop" class="hidden">
                 <i class="fas fa-stop"></i>
@@ -54,15 +56,16 @@
             <h3>Your Sessions </h3>
             <ul class = "tomatos" id="pomodoro-sessions">
 
-              
+              <li></li>
 
              
             </ul>
           </div>
-        </div>
+        
       </div>
       </div>
      <!-- <div class='test'><img src='./half-tomato-png.png' alt='test'></div> --> 
     </div>
+  </div>
 </body>
 </html>

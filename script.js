@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const startButton = document.querySelector("#pomodoro-start");
+  const startButton = document.querySelector(".o-play-btn");
 
   const stopButton = document.querySelector("#pomodoro-stop");
   let updatedWorkSessionDuration;
@@ -8,12 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let workDurationInput = document.querySelector("#input-work-duration");
   let breakDurationInput = document.querySelector("#input-break-duration");
 
-  workDurationInput.value = "25";
+  workDurationInput.value = "30";
   breakDurationInput.value = "5";
   let isClockRunning = false;
   // in seconds = 25 mins
-  let workSessionDuration = 1500;
-  let currentTimeLeftInSession = 1500;
+  let workSessionDuration = 1800;
+  let currentTimeLeftInSession = 1800;
   // in seconds = 5 mins;
   let breakSessionDuration = 300;
   let type = "Work";
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressBar = new ProgressBar.Circle("#pomodoro-timer", {
     strokeWidth: 2,
     text: {
-      value: "25:00",
+      value: "30:00",
     },
     trailColor: "#f4f4f4",
   });
@@ -149,9 +149,10 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   var displaySessionLog = function displaySessionLog(type) {
-    var sessionsList = document.querySelector("#pomodoro-sessions");
+    // var sessionsList = document.querySelector("#pomodoro-sessions");
     // append li to it
-    var li = document.createElement("li");
+    //var li = document.createElement("li");
+
     if (type === "Work") {
       // currentTaskLabel.value = "Break";
       sessionLabel = currentTaskLabel.value ? currentTaskLabel.value : "Work";
@@ -159,26 +160,35 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       sessionLabel = "Break";
     }
-    let tomatos = document.querySelector("ul.tomatos");
-    let tomato = document.createElement("li");
-    tomato.setAttribute("class", "half-tomato");
     var elapsedTime = parseInt(timeSpentInCurrentSession / 60);
-    elapsedTime = elapsedTime > 0 ? elapsedTime : "< 1";
+    elapsedTime = elapsedTime > 1 ? elapsedTime : "< 1";
 
-    var text = document.createTextNode(
+    let tomatos = document.querySelector("ul.tomatos");
+    let lastElm = tomatos.lastElementChild;
+    let tomato = document.createElement("li");
+
+    tomato.setAttribute("class", "half-tomato");
+    tomato.className =
+      lastElm.className === "full-tomato" && sessionLabel === "Work"
+        ? "half-tomato"
+        : lastElm.className === "half-tomato" && sessionLabel === "Work"
+        ? lastElm.classList.replace("half-tomato", "full-tomato")
+        : sessionLabel === "Work"
+        ? (tomato.className = "half-tomato")
+        : console.log("not enough time has been spent");
+
+    //tomato = elapsedTime > 1 ? tomato : console.log("keep working");
+    /* var text = document.createTextNode(
       sessionLabel + " : " + elapsedTime + " min"
-    );
+    );*/
 
-    let halfTomato = document.createElement("img");
-    halfTomato.setAttribute("src", "./half-tomato-png.png");
+    tomatos.appendChild(tomato);
+    //let halfTomato = document.createElement("img");
+    //halfTomato.setAttribute("src", "./half-tomato-png.png");
 
-    let fullTomato = document.createElement("img");
-    fullTomato.setAttribute("src", "./full-tomato-png.png");
     // Work : < 1 min will be 30 minutes
 
-    let displayTomato = halfTomato;
-    displayTomato = elapsedTime > 0 ? fullTomato : tomato;
-    tomatos.appendChild(tomato);
+    //lastElm.classList.replace("half-tomato", "full-tomato");
     //li.appendChild(text);
 
     // sessionsList.appendChild(li);
@@ -220,19 +230,19 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const togglePlayPauseIcon = (reset) => {
-    const playIcon = document.querySelector("#play-icon");
-    const pauseIcon = document.querySelector("#pause-icon");
+    //const playIcon = document.querySelector(".o-play-btn__icon");
+    //const pauseIcon = document.querySelector("#pause-icon");
     if (reset) {
       // when resetting -> always revert to play icon
-      if (playIcon.classList.contains("hidden")) {
-        playIcon.classList.remove("hidden");
+      if (startButton.classList.contains("o-play-btn--playing")) {
+        startButton.classList.remove("o-play-btn--playing");
       }
-      if (!pauseIcon.classList.contains("hidden")) {
+      /*if (!pauseIcon.classList.contains("hidden")) {
         pauseIcon.classList.add("hidden");
-      }
+      }*/
     } else {
-      playIcon.classList.toggle("hidden");
-      pauseIcon.classList.toggle("hidden");
+      startButton.classList.toggle("o-play-btn--playing");
+      // pauseIcon.classList.toggle("hidden");
     }
   };
 

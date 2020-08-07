@@ -8,24 +8,30 @@ body {
   margin: 0;
   max-height: 100vh;
   font-size: 20px;
+  color: #000;
+  font-family: arial, sans-sarif;
+
+  text-align: center;
 }
-#pomodoro-page {
-  background-color: red;
-}
+
 .wrapper {
-  margin: 0 auto;
-  max-height: 100vh;
-  max-width: 100vw;
-  background-image: url(./water.jpg);
+  /* background-image: url(./water.jpg);
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  background-size: cover;
+  background-size: cover;*/
+  background: rgb(6, 176, 255);
+  background: linear-gradient(
+    180deg,
+    rgba(6, 176, 255, 1) 0%,
+    rgba(6, 176, 255, 1) 55%,
+    rgba(255, 255, 255, 1) 100%
+  );
   padding-bottom: 200px;
 }
 #pomodoro-info {
   background-color: white;
   border: solid black 2px;
-  padding: 5px;
+  width: 60vw;
   margin-top: 10px;
 }
 #pomodoro-container {
@@ -35,6 +41,9 @@ body {
   justify-content: center;
   align-items: center;
   max-height: initial;
+}
+#pomodoro-stop {
+  margin-left: 20px;
 }
 #pomodoro-timer {
   max-width: 80vw;
@@ -75,6 +84,7 @@ body {
   padding: 5px 10px;
   border: 1px solid lightgrey;
   border-radius: 3px;
+  margin-bottom: 30px;
 }
 
 #pomodoro-clock-title {
@@ -83,11 +93,11 @@ body {
 }
 
 #pomodoro-clock-actions {
-  margin-top: 20px;
+  margin-top: 40px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  width: 100px;
+  width: 120px;
 }
 
 #pomodoro-clock-actions button {
@@ -115,10 +125,93 @@ body {
 .half-tomato {
   background-image: url("half-tomato-png.png");
   background-repeat: no-repeat;
-  padding: 10px;
+  padding: 30px;
 }
 .full-tomato {
   background-image: url("full-tomato-png.png");
   background-repeat: no-repeat;
-  padding: 10px;
+  padding: 30px;
+}
+li {
+  list-style: none;
+}
+.tomatos {
+  display: flex;
+  flex-direction: row;
+}
+.progressbar-text {
+  color: black;
+}
+
+/* Play/Pause BTN animation code-pen https://codepen.io/MarvinVK/pen/grJjzm*/
+.o-play-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+.o-play-btn__icon {
+  height: 30px;
+  width: 30px;
+  line-height: 30px;
+  position: relative;
+  z-index: 0;
+  box-sizing: border-box;
+  display: inline-block;
+  overflow: hidden;
+}
+.o-play-btn__icon:before,
+.o-play-btn__icon:after {
+  content: "";
+  position: absolute;
+  transition: 0.3s;
+  background: #fff;
+  height: 100%;
+  width: 50%;
+  top: 0;
+}
+.o-play-btn__icon:before {
+  left: 0;
+}
+.o-play-btn__icon:after {
+  right: 0;
+}
+.o-play-btn__mask {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.o-play-btn__mask:before,
+.o-play-btn__mask:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  height: 100%;
+  width: 150%;
+  background: rgb(6, 176, 255);
+  transition: all 0.3s ease-out;
+}
+.o-play-btn__mask:before {
+  top: -90%;
+  transform-origin: 0% 100%;
+  transform: rotate(26.5deg);
+}
+.o-play-btn__mask:after {
+  transform-origin: 0% 0%;
+  transform: rotate(-26.5deg);
+  top: 90%;
+}
+.o-play-btn--playing .o-play-btn__icon:before {
+  transform: translateX(-25%);
+}
+.o-play-btn--playing .o-play-btn__icon:after {
+  transform: translateX(25%);
+}
+.o-play-btn--playing .o-play-btn__mask:before,
+.o-play-btn--playing .o-play-btn__mask:after {
+  transform: rotate(0);
 }
